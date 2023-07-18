@@ -9,7 +9,8 @@ const createArticle = async (req, res) => {
         })
         res.status(201).json({
             newArticle,
-            message: '发布文章成功'
+            message: '发布文章成功',
+            code: 1
         })
     } catch (error) {
         res.status(500).json({message: '发布文章失败', error: error.message})
@@ -93,7 +94,8 @@ const updateArticle = async (req, res) => {
         if (article) {
             res.status(201).json({
                 article,
-                message: '编辑文章成功'
+                message: '编辑文章成功',
+                code: 1
             })
         } else {
             res.status(404).json({ message: '文章不存在' })

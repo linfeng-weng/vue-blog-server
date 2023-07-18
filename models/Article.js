@@ -4,8 +4,8 @@ const articleSchema = new mongoose.Schema({
     cover: String,
     title: String,
     content: String,
-    category: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
-    tags: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Tag' }],
+    category: String,
+    tags: [String],
     created_at: { type: Date, default: Date.now },
     updated_at: { type: Date, default: Date.now }
 })

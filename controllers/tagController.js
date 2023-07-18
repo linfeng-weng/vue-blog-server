@@ -19,7 +19,15 @@ const getTag = async (req, res) => {
 // 新建标签
 const createTag = async (req, res) => {
     try {
-        const newTag = await Tag.create({ ...req.body })
+        const { name } = req.body
+
+        const isExist = await Tag.find({ name })
+        if(isExist.length !== 0) {
+            return res.status(200).json({
+                message: '标签已经存在'
+            })
+        }
+        const newTag = await Tag.create({ name })
 
         res.status(201).json({
             newTag,
@@ -50,18 +58,18 @@ const deleteTag = async (req, res) => {
 }
 
 // 根据标签获取对应文章列表
-const getArticleByTid = async (req, res) => {
+const getArticleByT_name = async (req, res) => {
     try {
-        const { id } = req.params
+        const { name } = req.params
         
-        const tag = await Tag.findById(id)
-        if(!tag) return res.status(404).json({ message: '标签不存在' })
+        const tag = await Tag.find({name})
+        if(tag.length === 0) return res.status(404).json({ message: '标签不存在' })
 
         // 设置分页参数
         const limit = BLOG.articleLimit
         const skip = Number(req.query.page) * limit || 0
 
-        const articles = await Article.find({ tags: { $in: [id] } })
+        const articles = await Article.find({ tags: { $in: [name] } })
             .populate('category')
             .populate('tags')
             .skip(skip)
@@ -78,4 +86,4 @@ const getArticleByTid = async (req, res) => {
     }
 }
 
-module.exports = { getTag, createTag, deleteTag, getArticleByTid }
+module.exports = { getTag, createTag, deleteTag, getArticleByT_name }

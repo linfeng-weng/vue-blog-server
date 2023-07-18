@@ -18,13 +18,13 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static(path.join(__dirname, 'uploads')))
 
 // 解析jwt
-app.use(
-    expressjwt({
-      secret: '@vue-blog*',
-      algorithms: ['HS256']   //对称加密方法
-    })
-    .unless(authConfig)
-  )
+// app.use(
+//     expressjwt({
+//       secret: '@vue-blog*',
+//       algorithms: ['HS256']   //对称加密方法
+//     })
+//     .unless(authConfig)
+//   )
 
 
 // 导入使用处理图片路由模块

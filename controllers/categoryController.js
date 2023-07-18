@@ -19,7 +19,16 @@ const getCategory = async (req, res) => {
 // 新建分类
 const createCategory = async (req, res) => {
     try {
-        const newCategory = await Category.create({ ...req.body })
+        const { name } = req.body
+
+        const isExist = await Category.find({ name })
+        if(isExist.length !== 0) {
+            return res.status(200).json({
+                message: '分类已经存在'
+            })
+        }
+
+        const newCategory = await Category.create({ name })
 
         res.status(201).json({
             newCategory,
@@ -48,18 +57,18 @@ const deleteCategory = async (req, res) => {
     }
 }
 // 根据分类获取对应文章列表
-const getArticleByCid = async (req, res) => {
+const getArticleByCname = async (req, res) => {
     try {
-        const { id } = req.params
+        const { name } = req.params
         
-        const category = await Category.findById(id)
-        if(!category) return res.status(404).json({ message: '分类不存在' })
+        const category = await Category.find({name})
+        if(category.length === 0) return res.status(404).json({ message: '分类不存在' })
 
         // 设置分页参数
         const limit = BLOG.articleLimit
         const skip = Number(req.query.page) * limit || 0
 
-        const articles = await Article.find({ category: id })
+        const articles = await Article.find({ category: name })
             .populate('category')
             .populate('tags')
             .skip(skip)
@@ -75,4 +84,4 @@ const getArticleByCid = async (req, res) => {
     }
 }
 
-module.exports = { getCategory, createCategory, deleteCategory, getArticleByCid }
+module.exports = { getCategory, createCategory, deleteCategory, getArticleByCname }

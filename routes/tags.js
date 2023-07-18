@@ -9,6 +9,6 @@ router.post('/', tagController.createTag)
 // 根据id删除分类
 router.delete('/:id', tagController.deleteTag)
 // 根据标签获取对应的文章列表
-router.get('/:id', tagController.getArticleByTid)
+router.get('/:name', tagController.getArticleByT_name)
 
 module.exports = router
