@@ -7,13 +7,10 @@ const getCategory = async (req, res) => {
     try {
         const category = await Category.find()
 
-        res.status(200).json({
-            category,
-            message: '获取分类成功'
-        })
+        res.status(200).json({ category, message: '获取分类成功' })
 
     } catch (error) {
-        res.status(500).json({message: '获取分类失败', error: error.message})
+        res.status(500).json({ message: '获取分类失败', error: error.message })
     }
 }
 // 新建分类
@@ -22,18 +19,11 @@ const createCategory = async (req, res) => {
         const { name } = req.body
 
         const isExist = await Category.find({ name })
-        if(isExist.length !== 0) {
-            return res.status(200).json({
-                message: '分类已经存在'
-            })
-        }
-
+        if(isExist.length !== 0) return res.status(200).json({ message: '分类已经存在' })
+        
         const newCategory = await Category.create({ name })
 
-        res.status(201).json({
-            newCategory,
-            message: '新建分类成功'
-        })
+        res.status(201).json({ newCategory, message: '新建分类成功' })
 
     } catch (error) {
         res.status(500).json({message: '新建分类失败', error: error.message})
@@ -74,10 +64,7 @@ const getArticleByCname = async (req, res) => {
             .skip(skip)
             .limit(limit)
 
-        res.status(200).json({
-            articles,
-            message: '根据分类获取文章成功'
-        }) 
+        res.status(200).json({ articles, message: '根据分类获取文章成功' }) 
 
     } catch (error) {
         res.status(500).json({message: '根据分类获取文章失败', error: error.message})

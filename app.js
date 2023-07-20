@@ -2,9 +2,6 @@ const express = require('express')
 const path = require('path')
 const cors = require('cors')
 const bodyParser = require('body-parser')
-const { expressjwt } = require('express-jwt') //解析token中间件
-
-const authConfig = require('./config/authConfig')
 
 // 创建express服务器实例
 const app = express()
@@ -16,15 +13,6 @@ app.use(bodyParser.json({limit: '10mb'}));
 app.use(bodyParser.urlencoded({extended: true}));
 // 将uploads文件夹设置为静态文件夹，可供外部直接访问
 app.use(express.static(path.join(__dirname, 'uploads')))
-
-// 解析jwt
-// app.use(
-//     expressjwt({
-//       secret: '@vue-blog*',
-//       algorithms: ['HS256']   //对称加密方法
-//     })
-//     .unless(authConfig)
-//   )
 
 
 // 导入使用处理图片路由模块

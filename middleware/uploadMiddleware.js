@@ -8,7 +8,8 @@ const storage = multer.diskStorage({
   // 设置上传文件的存储目录
   destination: (req, file, cb) => {
     const uploadPath = path.join(__dirname, '../uploads/images')
-
+    
+    // 判断是否有该文件夹，没有就创建
     if (!fs.existsSync(uploadPath)) {
       fs.mkdirSync(uploadPath)
     }

@@ -8,7 +8,7 @@ router.get('/', categoryController.getCategory)
 // 新建分类
 router.post('/', authenticateToken, categoryController.createCategory)
 // 根据id删除分类
-router.delete('/:id', categoryController.deleteCategory)
+router.delete('/:id', authenticateToken, categoryController.deleteCategory)
 // 根据分类获取对应文章列表
 router.get('/:name', categoryController.getArticleByCname)
 

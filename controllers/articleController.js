@@ -1,5 +1,7 @@
 const BLOG = require('../blog_config')
 const Article = require('../models/Article')
+const fs = require('fs')
+const path = require('path')
  
 // 发布文章
 const createArticle = async (req, res) => {
@@ -7,13 +9,21 @@ const createArticle = async (req, res) => {
         const newArticle = await Article.create({
             ...req.body
         })
-        res.status(201).json({
-            newArticle,
-            message: '发布文章成功',
-            code: 1
-        })
+        res.status(201).json({ newArticle, message: '发布文章成功' })
     } catch (error) {
         res.status(500).json({message: '发布文章失败', error: error.message})
+    }
+}
+
+// 获取文章总数
+const totalArticle = async (req, res) => {
+    try {
+        const total = await Article.countDocuments() // 获取文章数量
+    
+        res.status(200).json({ total, limit: BLOG.articleLimit, message: '获取文章总数成功' })
+
+    } catch (error) {
+        res.status(500).json({ message: '获取文章数量失败', error: error.message })
     }
 }
 
@@ -30,10 +40,7 @@ const getArticle = async (req, res) => {
             .skip(skip)
             .limit(limit)
         
-        res.status(200).json({
-            article,
-            message: '获取文章成功'
-        })
+        res.status(200).json({ article, message: '获取文章成功' })
 
     } catch (error) {
         res.status(500).json({message: '获取文章失败', error: error.message})
@@ -50,10 +57,7 @@ const getArticleById = async (req, res) => {
             .populate('category')
         
         if (article) {
-            res.status(200).json({
-                article,
-                message: '查找文章成功'
-            })
+            res.status(200).json({ article, message: '查找文章成功' })
         } else {
             res.status(404).json({ message: '文章不存在' })
         }
@@ -69,8 +73,13 @@ const deleteArticle = async (req, res) => {
         const { id } = req.params
         
         const result = await Article.findByIdAndDelete(id)
-
+        
         if (result) {
+
+            // 删除存储在项目文件夹的文章封面图片
+            const imagePath = path.join(__dirname, '..', 'uploads', result.cover)
+            fs.unlinkSync(imagePath)
+
             res.status(200).json({message: '删除文章成功'})
         } else {
             res.status(404).json({ message: '文章不存在' })
@@ -85,18 +94,21 @@ const deleteArticle = async (req, res) => {
 const updateArticle = async (req, res) => {
     try {
         const { id } = req.params
-  
+
+        const oldArticle = await Article.findById(id)
         const article = await Article.findByIdAndUpdate(id, {
             ...req.body,
             updated_at: Date.now()
         }, { new: true })   //new: true 返回更新后的文档
     
         if (article) {
-            res.status(201).json({
-                article,
-                message: '编辑文章成功',
-                code: 1
-            })
+            // 如果上传了新的封面图片就删除原来存储在本地的图片
+            if(article.cover != oldArticle.cover) {
+                const imagePath = path.join(__dirname, '..', 'uploads', oldArticle.cover)
+                fs.unlinkSync(imagePath)
+            }
+
+            res.status(201).json({ article, message: '编辑文章成功' })
         } else {
             res.status(404).json({ message: '文章不存在' })
         }
@@ -107,4 +119,4 @@ const updateArticle = async (req, res) => {
     
 }
 
-module.exports = { createArticle, getArticle, getArticleById, deleteArticle, updateArticle }
+module.exports = { createArticle, totalArticle, getArticle, getArticleById, deleteArticle, updateArticle }

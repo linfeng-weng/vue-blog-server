@@ -75,11 +75,7 @@ const getArticleByT_name = async (req, res) => {
             .skip(skip)
             .limit(limit)
 
-        res.status(200).json({
-            tag,
-            articles,
-            message: '根据标签获取文章成功'
-        })
+        res.status(200).json({ tag, articles, message: '根据标签获取文章成功' })
 
     } catch (error) {
         res.status(500).json({message: '根据标签获取文章失败', error: error.message})
