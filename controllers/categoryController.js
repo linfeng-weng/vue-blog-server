@@ -13,6 +13,19 @@ const getCategory = async (req, res) => {
         res.status(500).json({ message: '获取分类失败', error: error.message })
     }
 }
+
+// 获取分类总数
+const totalCategory = async (req, res) => {
+    try {
+        const total = await Category.countDocuments() // 获取分类数量
+    
+        res.status(200).json({ total, message: '获取分类总数成功' })
+
+    } catch (error) {
+        res.status(500).json({ message: '获取分类总数失败', error: error.message })
+    }
+}
+
 // 新建分类
 const createCategory = async (req, res) => {
     try {
@@ -71,4 +84,4 @@ const getArticleByCname = async (req, res) => {
     }
 }
 
-module.exports = { getCategory, createCategory, deleteCategory, getArticleByCname }
+module.exports = { getCategory, totalCategory, createCategory, deleteCategory, getArticleByCname }

@@ -12,3 +12,6 @@ lerna-debug.log*
 .DS_Store
 *.local
 .vscode/
+
+
+uploads/

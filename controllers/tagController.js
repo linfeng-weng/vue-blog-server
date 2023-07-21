@@ -16,6 +16,18 @@ const getTag = async (req, res) => {
     }
 }
 
+// 获取标签总数
+const totalTag = async (req, res) => {
+    try {
+        const total = await Tag.countDocuments() // 获取标签数量
+    
+        res.status(200).json({ total, message: '获取标签总数成功' })
+
+    } catch (error) {
+        res.status(500).json({ message: '获取标签总数失败', error: error.message })
+    }
+}
+
 // 新建标签
 const createTag = async (req, res) => {
     try {
@@ -82,4 +94,4 @@ const getArticleByT_name = async (req, res) => {
     }
 }
 
-module.exports = { getTag, createTag, deleteTag, getArticleByT_name }
+module.exports = { getTag, totalTag, createTag, deleteTag, getArticleByT_name }
