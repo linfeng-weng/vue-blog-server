@@ -27,6 +27,17 @@ const totalArticle = async (req, res) => {
     }
 }
 
+// 获取文章列表
+const getAllArticle = async (req, res) => {
+    try {
+        const article = await Article.find({},{content: 0})
+        res.status(200).json({ article, message: '获取文章成功' })
+
+    } catch (error) {
+        res.status(500).json({ message: '获取文章列表失败', error: error.message })
+    }
+}
+
 // 分页获取文章列表
 const getArticle = async (req, res) => {
     try {
@@ -35,8 +46,6 @@ const getArticle = async (req, res) => {
         const skip = Number(req.query.page) * limit || 0
 
         const article = await Article.find()
-            .populate('tags')
-            .populate('category')
             .skip(skip)
             .limit(limit)
         
@@ -53,8 +62,6 @@ const getArticleById = async (req, res) => {
         const { id } = req.params
         
         const article = await Article.findById(id)
-            .populate('tags')
-            .populate('category')
         
         if (article) {
             res.status(200).json({ article, message: '查找文章成功' })
@@ -119,4 +126,4 @@ const updateArticle = async (req, res) => {
     
 }
 
-module.exports = { createArticle, totalArticle, getArticle, getArticleById, deleteArticle, updateArticle }
+module.exports = { createArticle, totalArticle, getAllArticle, getArticle, getArticleById, deleteArticle, updateArticle }

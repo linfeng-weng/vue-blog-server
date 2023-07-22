@@ -5,8 +5,24 @@ const Article = require('../models/Article')
 // 获取分类
 const getCategory = async (req, res) => {
     try {
-        const category = await Category.find()
-
+        // const category = await Category.find()
+        // 使用聚合管道，多表关联查询，数据统计
+        const category = await Category.aggregate([
+            {
+                $lookup: {
+                    from: 'articles',
+                    localField: 'name',
+                    foreignField: 'category',
+                    as: 'articles'
+                }
+            },
+            {
+                $project: {
+                    name: 1,
+                    num: { $size: '$articles' },
+                }
+            }
+        ])
         res.status(200).json({ category, message: '获取分类成功' })
 
     } catch (error) {

@@ -7,6 +7,8 @@ const authenticateToken = require('../middleware/authMiddleware')
 router.post('/', authenticateToken, articleController.createArticle)
 // 获取文章总数
 router.get('/total', articleController.totalArticle)
+// 获取文章列表
+router.get('/all', articleController.getAllArticle)
 // 分页获取文章列表
 router.get('/', articleController.getArticle)
 // 根据id查看文章

@@ -5,7 +5,33 @@ const Article = require('../models/Article')
 // 获取标签
 const getTag = async (req, res) => {
     try {
-        const tags = await Tag.find()
+        // const tags = await Tag.find()
+        const tags = await Tag.aggregate([
+            {
+                $lookup: {
+                    from: 'articles', // 文章模型的集合名称，假设为'articles'
+                    localField: 'name', // 修正为正确的字段名
+                    foreignField: 'tags',
+                    as: 'articles'
+                }
+            },
+            {
+                $unwind: '$articles' // 展开articles数组
+            },
+            {
+                $group: {
+                    _id: '$name', // 使用标签的name字段作为分组依据
+                    num: { $sum: 1 } // 计算每个标签对应的文章数量
+                }
+            },
+            {
+                $project: {
+                    _id: 0, // 不显示_id字段
+                    name: '$_id', // 显示标签名，将_id重命名为name
+                    num: 1 // 显示文章数量
+                }
+            }
+        ])
         
         res.status(200).json({
             tags,
