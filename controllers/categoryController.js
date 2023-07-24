@@ -79,7 +79,6 @@ const deleteCategory = async (req, res) => {
 const getArticleByCname = async (req, res) => {
     try {
         const { name } = req.params
-        
         const category = await Category.find({name})
         if(category.length === 0) return res.status(404).json({ message: '分类不存在' })
 

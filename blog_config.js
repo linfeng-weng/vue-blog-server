@@ -4,7 +4,7 @@ const BLOG = {
     adminUsername : process.env.ADMIN_USERNAME || 'admin',  // 用户名
     adminPassword : process.env.ADMIN_PASSWORD || 'admin',   //密码
 
-    articleLimit: 10, // 预览博客数量
+    articleLimit: 4, // 预览博客数量
 }
 
 module.exports = BLOG
