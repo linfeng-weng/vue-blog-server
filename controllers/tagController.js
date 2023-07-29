@@ -16,17 +16,21 @@ const getTag = async (req, res) => {
                 }
             },
             {
-                $unwind: '$articles' // 展开articles数组
+                $unwind: {
+                    path: '$articles',
+                    preserveNullAndEmptyArrays: true // 保留空数组和未匹配的文档
+                }
             },
             {
                 $group: {
                     _id: '$name', // 使用标签的name字段作为分组依据
-                    num: { $sum: 1 } // 计算每个标签对应的文章数量
+                    doc: { $first: '$$ROOT' }, // 保留整个文档
+                    num: { $sum: { $cond: [{ $ifNull: ['$articles', false] }, 1, 0] } } // 计算每个标签对应的文章数量
                 }
             },
             {
                 $project: {
-                    _id: 0, // 不显示_id字段
+                    _id: '$doc._id', // 显示标签的原本_id字段
                     name: '$_id', // 显示标签名，将_id重命名为name
                     num: 1 // 显示文章数量
                 }

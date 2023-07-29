@@ -46,6 +46,7 @@ const getArticle = async (req, res) => {
         const skip = Number(req.query.page) * limit || 0
 
         const article = await Article.find()
+            .sort({ created_at: -1 })
             .skip(skip)
             .limit(limit)
         

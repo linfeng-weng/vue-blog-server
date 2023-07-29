@@ -20,5 +20,9 @@ const login = (req, res) => {
     }
 }
 
+// 判断token是否过期
+const judgeToken = (req, res) => {
+    res.status(200).json({message: '验证成功'})
+}
 
-module.exports = { login }
+module.exports = { login, judgeToken }

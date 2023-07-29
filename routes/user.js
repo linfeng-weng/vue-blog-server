@@ -7,7 +7,7 @@ const authenticateToken = require('../middleware/authMiddleware')
 router.post('/login', userController.login)
 
 // 判断token是否过期
-router.get('/', authenticateToken)
+router.get('/', authenticateToken, userController.judgeToken)
 
 
 module.exports = router
