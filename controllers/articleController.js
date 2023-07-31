@@ -6,9 +6,20 @@ const path = require('path')
 // 发布文章
 const createArticle = async (req, res) => {
     try {
+        const { cover, title, content, abstract, category, tags, contentImg, deleteImgList } = req.body
+        const data = { cover, title, content, abstract, category, tags, contentImg }
+
         const newArticle = await Article.create({
-            ...req.body
+            ...data
         })
+
+        deleteImgList.forEach(item => {
+            if(item) {
+                const Path = path.join(__dirname, '..', 'uploads', item)
+                if(fs.existsSync(Path)) fs.unlinkSync(Path)
+            }
+        })
+
         res.status(201).json({ newArticle, message: '发布文章成功' })
     } catch (error) {
         res.status(500).json({message: '发布文章失败', error: error.message})
@@ -83,10 +94,19 @@ const deleteArticle = async (req, res) => {
         const result = await Article.findByIdAndDelete(id)
         
         if (result) {
-
             // 删除存储在项目文件夹的文章封面图片
             const imagePath = path.join(__dirname, '..', 'uploads', result.cover)
-            fs.unlinkSync(imagePath)
+            if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath)
+
+            // 删除文章内容的图片
+            if(result.contentImg.length > 0) {
+                result.contentImg.forEach(item => {
+                    if(item) {
+                        const Path = path.join(__dirname, '..', 'uploads', item)
+                        if(fs.existsSync(Path)) fs.unlinkSync(Path)
+                    }
+                })
+            }
 
             res.status(200).json({message: '删除文章成功'})
         } else {
@@ -102,18 +122,27 @@ const deleteArticle = async (req, res) => {
 const updateArticle = async (req, res) => {
     try {
         const { id } = req.params
+        const { cover, title, content, abstract, category, tags, contentImg, deleteImgList } = req.body
+        const data = { cover, title, content, abstract, category, tags, contentImg }
 
         const oldArticle = await Article.findById(id)
         const article = await Article.findByIdAndUpdate(id, {
-            ...req.body,
+            ...data,
             updated_at: Date.now()
         }, { new: true })   //new: true 返回更新后的文档
     
+        deleteImgList.forEach(item => {
+            if(item) {
+                const Path = path.join(__dirname, '..', 'uploads', item)
+                if(fs.existsSync(Path)) fs.unlinkSync(Path)
+            }
+        })
+
         if (article) {
             // 如果上传了新的封面图片就删除原来存储在本地的图片
             if(article.cover != oldArticle.cover) {
                 const imagePath = path.join(__dirname, '..', 'uploads', oldArticle.cover)
-                fs.unlinkSync(imagePath)
+                if (fs.existsSync(imagePath)) fs.unlinkSync(imagePath)
             }
 
             res.status(201).json({ article, message: '编辑文章成功' })

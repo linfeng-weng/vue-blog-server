@@ -11,7 +11,7 @@ const storage = multer.diskStorage({
     
     // 判断是否有该文件夹，没有就创建
     if (!fs.existsSync(uploadPath)) {
-      fs.mkdirSync(uploadPath)
+      fs.mkdirSync(uploadPath,{ recursive: true })
     }
 
     cb(null, 'uploads/images')

@@ -7,8 +7,8 @@ const bodyParser = require('body-parser')
 const app = express()
 // 处理跨域
 app.use(cors())
-// 解析较大的JSON数据，如图片
-app.use(bodyParser.json({limit: '20mb'}));
+// 解析较大的JSON数据
+app.use(bodyParser.json({limit: '5mb'}));
 // 解析表单数据的中间件,这个中间件，解析 application/x-www-form-urlencoded 格式的表单
 app.use(bodyParser.urlencoded({extended: true}));
 // 将uploads文件夹设置为静态文件夹，可供外部直接访问
