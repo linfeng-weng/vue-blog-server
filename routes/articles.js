@@ -18,5 +18,4 @@ router.delete('/:id', authenticateToken, articleController.deleteArticle)
 // 根据id编辑文章
 router.patch('/:id', authenticateToken, articleController.updateArticle)
 
-
 module.exports = router

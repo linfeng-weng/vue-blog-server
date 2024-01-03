@@ -9,5 +9,4 @@ router.post('/login', userController.login)
 // 判断token是否过期
 router.get('/', authenticateToken, userController.judgeToken)
 
-
 module.exports = router

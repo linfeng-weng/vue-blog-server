@@ -2,7 +2,6 @@ const jwt = require('jsonwebtoken')
 const BLOG = require('../blog_config')
 const { adminUsername } = BLOG
 
-
 function authenticateToken(req, res, next) {
   const token = (req.headers.authorization || '').slice(7) // 获取请求头中的 token
 
