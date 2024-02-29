@@ -3,9 +3,6 @@ const Visit = require('../models/Visit')
 // 新增访问量
 const recordVisit = async (req, res) => {
   try {
-    const clientIp = req.socket.remoteAddress
-    console.log('Client IP:', clientIp)
-
     const currentDate = new Date()
     const currentMonth = currentDate.getMonth() + 1
     const currentYear = currentDate.getFullYear()
