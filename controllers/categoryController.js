@@ -1,42 +1,23 @@
-const BLOG = require('../blog_config')
 const Category = require('../models/Category')
 const Article = require('../models/Article')
 
 // 获取分类
 const getCategory = async (req, res) => {
   try {
-    // const category = await Category.find()
+    const total = await Category.countDocuments()
+
     // 使用聚合管道，多表关联查询，数据统计
     const category = await Category.aggregate([
       {
-        $lookup: {
-          from: 'articles',
-          localField: 'name',
-          foreignField: 'category',
-          as: 'articles'
-        }
+        $lookup: { from: 'articles', localField: '_id', foreignField: 'category', as: 'articles' }
       },
       {
-        $project: {
-          name: 1,
-          num: { $size: '$articles' }
-        }
+        $project: { name: 1, created_at: 1, num: { $size: '$articles' } }
       }
     ])
-    res.status(200).json({ category, message: '获取分类成功' })
+    res.status(200).json({ code: 0, total, data: category, message: '获取分类成功' })
   } catch (error) {
     res.status(500).json({ message: '获取分类失败', error: error.message })
-  }
-}
-
-// 获取分类总数
-const totalCategory = async (req, res) => {
-  try {
-    const total = await Category.countDocuments() // 获取分类数量
-
-    res.status(200).json({ total, message: '获取分类总数成功' })
-  } catch (error) {
-    res.status(500).json({ message: '获取分类总数失败', error: error.message })
   }
 }
 
@@ -50,7 +31,7 @@ const createCategory = async (req, res) => {
 
     const newCategory = await Category.create({ name })
 
-    res.status(201).json({ newCategory, message: '新建分类成功' })
+    res.status(201).json({ code: 0, newCategory, message: '新建分类成功' })
   } catch (error) {
     res.status(500).json({ message: '新建分类失败', error: error.message })
   }
@@ -63,7 +44,7 @@ const deleteCategory = async (req, res) => {
     const result = await Category.findByIdAndDelete(id)
 
     if (result) {
-      res.status(200).json({ message: '删除分类成功', result })
+      res.status(200).json({ code: 0, message: '删除分类成功', result })
     } else {
       res.status(404).json({ message: '分类不存在' })
     }
@@ -71,27 +52,36 @@ const deleteCategory = async (req, res) => {
     res.status(500).json({ message: '删除分类失败', error: error.message })
   }
 }
-// 根据分类获取对应文章列表
-const getArticleByCname = async (req, res) => {
+
+// 根据id编辑分类
+const editCategory = async (req, res) => {
   try {
-    const { name } = req.params
-    const category = await Category.find({ name })
+    const category = await Category.findByIdAndUpdate(req.params.id, req.body)
+    if (category) res.status(201).json({ code: 0, message: '编辑分类成功' })
+  } catch (error) {
+    res.status(500).json({ message: '编辑分类失败', error: error.message })
+  }
+}
+
+// 根据分类id获取对应文章列表
+const getArticleByCid = async (req, res) => {
+  try {
+    const { id } = req.params
+    const { page, limit } = req.query
+    const category = await Category.find({ _id: id }, { name: 1 })
     if (category.length === 0) return res.status(404).json({ message: '分类不存在' })
 
-    // 设置分页参数
-    const limit = BLOG.articleLimit
-    const skip = Number(req.query.page) * limit || 0
-
-    const articles = await Article.find({ category: name })
+    const skip = page * limit || 0
+    const articles = await Article.find({ category: id }, { content: 0 })
       .populate('category')
       .populate('tags')
       .skip(skip)
       .limit(limit)
 
-    res.status(200).json({ articles, message: '根据分类获取文章成功' })
+    res.status(200).json({ code: 0, category, articles, message: '根据分类获取文章成功' })
   } catch (error) {
     res.status(500).json({ message: '根据分类获取文章失败', error: error.message })
   }
 }
 
-module.exports = { getCategory, totalCategory, createCategory, deleteCategory, getArticleByCname }
+module.exports = { getCategory, createCategory, deleteCategory, editCategory, getArticleByCid }

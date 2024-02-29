@@ -5,11 +5,7 @@ const authenticateToken = require('../middleware/authMiddleware')
 
 // 发布文章
 router.post('/', authenticateToken, articleController.createArticle)
-// 获取文章总数
-router.get('/total', articleController.totalArticle)
-// 获取文章列表
-router.get('/all', articleController.getAllArticle)
-// 分页获取文章列表
+// 获取文章列表(可分页)
 router.get('/', articleController.getArticle)
 // 根据id查看文章
 router.get('/:id', articleController.getArticleById)
@@ -17,5 +13,9 @@ router.get('/:id', articleController.getArticleById)
 router.delete('/:id', authenticateToken, articleController.deleteArticle)
 // 根据id编辑文章
 router.patch('/:id', authenticateToken, articleController.updateArticle)
+// 搜索文章
+router.get('/search/:s', articleController.searchArticle)
+// 获取近一年热门文章
+router.get('/hot_articles/top8', articleController.getHotArticle)
 
 module.exports = router

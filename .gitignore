@@ -13,5 +13,7 @@ lerna-debug.log*
 *.local
 .vscode/
 
-
+.env
+SSL/*.crt
+SSL/*.key
 uploads/
