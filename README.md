@@ -1,7 +1,7 @@
 # vue-blog-server
 
-博客前台：[vue-blog](https://github.com/linfeng-weng/vue-blog)  
-博客后台管理：[vue-blog-admin](https://github.com/linfeng-weng/vue-blog-admin)
+前台：[vue-blog](https://github.com/linfeng-weng/vue-blog)  
+后台管理：[vuets-blog-admin](https://github.com/linfeng-weng/vuets-blog-admin)
 
 ## 技术栈
 
